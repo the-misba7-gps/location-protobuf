@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package org.gpstraccer.location.model;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "org.gpstraccer.location.proto.model";
+
+service RideService {
+  rpc getRide(google.protobuf.StringValue) returns (Ride) {}
+  rpc getRides(RideRequest) returns (RideList) {}
+}
+
+message RideRequest {
+  string imei = 1;
+  optional string group_id = 2;
+  optional int64 device_id = 3;
+}
+
+message RideList {
+  repeated Ride rides = 1;
+}
+// Enum for ride status
+enum Status {
+  IN_PROGRESS = 0;
+  ENDED = 1;
+}
+
+// Enum for position priority
+enum Priority {
+  LOW = 0;
+  HIGH = 1;
+  PANIC = 2;
+}
+
+
+// Message for station information
+message Station {
+  string name = 1;
+  double latitude = 2;
+  double longitude = 3;
+}
+
+// Message for position information
+message Position {
+  string group_id = 1;
+  string id = 2;
+  string protocol = 3;
+  int64 server_time = 4;
+  google.protobuf.Timestamp device_time = 5;
+  google.protobuf.Timestamp fix_time = 6;
+  string imei = 7;
+  bool outdated = 8;
+  bool valid = 9;
+  double latitude = 10;
+  double longitude = 11;
+  double altitude = 12;  // value in meters
+  double speed = 13;     // value in knots
+  double course = 14;
+  string address = 15;
+  double accuracy = 16;
+  repeated int64 geofence_ids = 17;
+  Priority priority = 18;
+  int64 device_id = 19;
+  string type = 20;
+}
+
+// Message for ride information
+message Ride {
+  string id = 1;
+  string imei = 2;
+  int64 device_id = 3;
+  int64 group_id = 4;
+  google.protobuf.DoubleValue distance = 5;
+  Station start_station = 6;
+  Station end_station = 7;
+  google.protobuf.Timestamp start_time = 8;
+  google.protobuf.Timestamp end_time = 9;
+  repeated Position locations = 10;
+  Status status = 11;
+}
+
+// Service definition
+service LocationService {
+  // Add your service methods here
+}
